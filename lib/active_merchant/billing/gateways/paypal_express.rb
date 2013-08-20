@@ -79,6 +79,10 @@ module ActiveMerchant #:nodoc:
         commit 'DoReferenceTransaction', build_reference_transaction_request('Sale', money, options)
       end
 
+      def get_balance(options = {})
+        commit 'GetBalance', build_get_balance_request(options)
+      end
+
       private
       def build_get_details_request(token)
         xml = Builder::XmlMarkup.new :indent => 2
@@ -174,6 +178,18 @@ module ActiveMerchant #:nodoc:
                 xml.tag! 'n2:BuyerEmailOptInEnable', (options[:allow_buyer_optin] ? '1' : '0')
               end
             end
+          end
+        end
+
+        xml.target!
+      end
+
+      def build_get_balance_request(options)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'GetBalanceReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'GetBalanceRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'n2:ReturnAllCurrencies', '1'
           end
         end
 
